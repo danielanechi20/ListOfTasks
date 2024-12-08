@@ -24,33 +24,6 @@ export const labels = [
   },
 ];
 
-export const features = [
-  {
-    id: 1,
-    title: " Intuitive Task Organization",
-    description:
-      "Easily create, prioritize, and manage tasks with our intuitive drag-and-drop interface",
-  },
-  {
-    id: 2,
-    title: "Collaborative Workspaces",
-    description:
-      "Collaborate seamlessly with your team by sharing tasks, assigning deadlines, and tracking progress in real-time",
-  },
-  {
-    id: 3,
-    title: "Customizable Reminders",
-    description:
-      "Stay on top of your deadlines and commitments with customizable reminders and notifications.",
-  },
-  {
-    id: 4,
-    title: "Cross-Platform Accessibility",
-    description:
-      "Access your tasks and workspaces from any device, anywhere, anytime.",
-  },
-];
-
 export const statuses = [
   {
     value: "backlog",

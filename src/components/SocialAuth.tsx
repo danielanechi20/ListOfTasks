@@ -1,6 +1,5 @@
 import {
   useSignInWithGoogle,
-  useSignInWithGithub,
 } from "react-firebase-hooks/auth";
 import { toast } from "sonner";
 
@@ -10,19 +9,11 @@ import { auth } from "@/firebase/config";
 const SocialAuth = () => {
   const [signInWithGoogle, googleUser, googleLoading, googleError] =
     useSignInWithGoogle(auth);
-  const [signInWithGithub, githubUser, githubLoading, githubError] =
-    useSignInWithGithub(auth);
   if (googleUser) {
     return <h1>{"Logged in as: " + googleUser.user.displayName}</h1>;
   }
-  if (githubUser) {
-    return <h1>{"Logged in as: " + githubUser.user.displayName}</h1>;
-  }
   if (googleError) {
     toast.error(googleError.message);
-  }
-  if (githubError) {
-    toast.error(githubError.message);
   }
   return (
     <>
@@ -50,20 +41,6 @@ const SocialAuth = () => {
             <Icons.google className="mr-2 h-4 w-4" />
           )}{" "}
           Google
-        </Button>
-        <Button
-          className="flex-1"
-          variant="outline"
-          type="button"
-          disabled={githubLoading}
-          onClick={() => signInWithGithub()}
-        >
-          {githubLoading ? (
-            <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-          ) : (
-            <Icons.gitHub className="mr-2 h-4 w-4" />
-          )}{" "}
-          GitHub
         </Button>
       </div>
     </>

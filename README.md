@@ -34,10 +34,3 @@ To get started with the app, follow these steps:
 
 like to see a live preview of the app, you can visit the following link: [Task Management App Web](https://dailytaskweb.netlify.app/)
 
-## Contributing
-
-Contributions are welcome! If you have any suggestions or improvements, please open an issue or submit a pull request.
-
-## License
-
-This project is licensed under the [MIT License](LICENSE).
