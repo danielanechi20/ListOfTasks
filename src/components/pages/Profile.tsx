@@ -143,7 +143,7 @@ const Profile = () => {
             <Avatar className="h-14 w-14">
               <AvatarImage src={profilePic?.toString()} alt={userName!} />
               <AvatarFallback>
-                {avatarFallbackGenarator(userName || "Daily Task")}
+                {avatarFallbackGenarator(userName || "List of Tasks")}
               </AvatarFallback>
             </Avatar>
           </div>

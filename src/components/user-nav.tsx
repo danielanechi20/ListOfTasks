@@ -26,7 +26,7 @@ export function UserNav() {
           <Avatar className="h-9 w-9">
             <AvatarImage src={profilePic?.toString()} alt={userName!} />
             <AvatarFallback>
-              {avatarFallbackGenarator(userName || "Daily Task")}
+              {avatarFallbackGenarator(userName || "List of Tasks")}
             </AvatarFallback>
           </Avatar>
         </Button>

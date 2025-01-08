@@ -7,7 +7,7 @@ const Landing = () => {
     <>
       <nav className="w-full flex items-center justify-between px-8 py-2 bg-yellow-200">
         <h1 className="font-bold text-2xl font-space-grotesk text-primary-foreground">
-          Daily Task
+          List of Tasks
         </h1>
         <Link to={"/app"}>
           <Button type="button" variant={"outline"}>
