@@ -1,3 +1,5 @@
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css"; 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Task, taskSchema } from "@/data/schema";
@@ -15,7 +17,7 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 import { Input } from "@/components/ui/input";
-import { labels, priorities, statuses } from "@/data/data";
+import { priorities, statuses } from "@/data/data";
 import { Separator } from "../ui/separator";
 import React, { useState } from "react";
 import { useTaskStore } from "@/stores/task-store";
@@ -37,11 +39,12 @@ const EditTaskForm: React.FC<EditTaskFormProps> = ({ isDialogOpen }) => {
     defaultValues: {
       id: selectedTaskToEdit?.id,
       title: selectedTaskToEdit?.title,
-      label: selectedTaskToEdit?.label,
       priority: selectedTaskToEdit?.priority,
       status: selectedTaskToEdit?.status,
       useruid: auth.currentUser?.uid,
       isFavorite: selectedTaskToEdit?.isFavorite,
+      creationDate: new Date(),
+      deadline: new Date(), // Default deadline is today
     },
   });
 
@@ -56,9 +59,6 @@ const EditTaskForm: React.FC<EditTaskFormProps> = ({ isDialogOpen }) => {
   }
   return (
     <Form {...EditTaskForm}>
-      <h1 className="font-bold text-2xl text-primary mt-6">
-        {selectedTaskToEdit?.id}
-      </h1>
       <form
         onSubmit={EditTaskForm.handleSubmit(onSubmit)}
         className="space-y-2"
@@ -89,92 +89,50 @@ const EditTaskForm: React.FC<EditTaskFormProps> = ({ isDialogOpen }) => {
                       checked={field.value}
                       onChange={field.onChange}
                     />
-                    {/* <Label
-                      className="hover:cursor-pointer hover:text-primary"
-                      htmlFor="isFavorite"
-                    >
-                      It's my favorite task.
-                    </Label> */}
                   </div>
                 </FormControl>
               </FormItem>
             )}
           />
         </div>
-        <FormField
-          name="status"
-          control={EditTaskForm.control}
-          render={({ field }) => (
-            <FormItem className="border rounded-sm p-2">
-              <FormLabel>Status</FormLabel>
-              <Separator />
-              <FormControl>
-                <RadioGroup
-                  defaultChecked={true}
-                  defaultValue={field.value}
-                  onValueChange={field.onChange}
-                  className="flex flex-wrap gap-2 justify-between"
-                >
-                  {statuses.map((status) => (
-                    <FormItem
-                      key={status.value}
-                      className="flex items-end space-x-2"
-                    >
-                      <FormControl>
-                        <RadioGroupItem
-                          value={status.value}
-                          id={status.label}
-                        />
-                      </FormControl>
-                      <FormLabel
-                        className="hover:cursor-pointer max-w-full"
-                        htmlFor={status.label}
-                      >
-                        {status.label}
-                      </FormLabel>
-                    </FormItem>
-                  ))}
-                </RadioGroup>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
         <div className="flex gap-2  w-full">
           <FormField
-            name="label"
-            control={EditTaskForm.control}
-            render={({ field }) => (
+             name="status"
+             control={EditTaskForm.control}
+             render={({ field }) => (
               <FormItem className="border flex-1 rounded-sm p-2">
-                <FormLabel>Label</FormLabel>
-                <Separator />
-                <FormControl>
-                  <RadioGroup
-                    defaultChecked={true}
-                    defaultValue={field.value}
-                    onValueChange={field.onChange}
-                  >
-                    {labels.map((label) => (
-                      <FormItem
-                        key={label.value}
-                        className="flex items-end space-x-2"
-                      >
-                        <RadioGroupItem value={label.value} id={label.label} />
-
-                        <FormLabel
-                          className="hover:cursor-pointer w-full"
-                          htmlFor={label.label}
-                        >
-                          {label.label}
-                        </FormLabel>
-                      </FormItem>
-                    ))}
-                  </RadioGroup>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                <FormLabel>Status</FormLabel>
+                  <Separator />
+                    <FormControl>
+                       <RadioGroup
+                          defaultChecked={true}
+                          defaultValue={field.value}
+                          onValueChange={field.onChange}
+                          >
+                         {statuses.map((status) => (
+                               <FormItem
+                                 key={status.value}
+                                 className="flex items-end space-x-2"
+                               >
+                                 <RadioGroupItem
+                                   value={status.value}
+                                   id={status.label}
+                                 />
+         
+                                 <FormLabel
+                                   className="hover:cursor-pointer w-full"
+                                   htmlFor={status.label}
+                                 >
+                                   {status.label}
+                                 </FormLabel>
+                               </FormItem>
+                             ))}
+                           </RadioGroup>
+                         </FormControl>
+                         <FormMessage />
+                       </FormItem>
+                     )}
+                   /> 
           <FormField
             name="priority"
             control={EditTaskForm.control}
@@ -213,6 +171,27 @@ const EditTaskForm: React.FC<EditTaskFormProps> = ({ isDialogOpen }) => {
             )}
           />
         </div>
+        <div>
+                  <FormField
+                    name="deadline"
+                    control={EditTaskForm.control}
+                    render={({ field }) => (
+                      <FormItem className="border flex-1 rounded-sm p-2">
+                        <FormLabel>Deadline</FormLabel>
+                        <FormControl>
+                        <DatePicker
+                            selected={field.value}
+                            onChange={(date) => field.onChange(date as Date)} 
+                            dateFormat="yyyy-MM-dd" // Formatul afisat
+                            placeholderText="Select deadline"
+                            className="w-full border rounded p-2 text-black" 
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
         <div className=" flex gap-2 justify-end">
           <Button
             onClick={() => isDialogOpen(false)}

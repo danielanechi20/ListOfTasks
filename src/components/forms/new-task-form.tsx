@@ -1,3 +1,5 @@
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css"; 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Task, taskSchema } from "@/data/schema";
@@ -15,7 +17,7 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 import { Input } from "@/components/ui/input";
-import { labels, priorities, statuses } from "@/data/data";
+import { priorities, statuses } from "@/data/data";
 import { Separator } from "../ui/separator";
 import React, { useState } from "react";
 import { useTaskStore } from "@/stores/task-store";
@@ -29,6 +31,7 @@ import FavoriteSwitch from "../ui/favorite-switch";
 interface NewTaskFormProps {
   isDialogOpen: (isOpen: boolean) => void;
 }
+
 const NewTaskForm: React.FC<NewTaskFormProps> = ({ isDialogOpen }) => {
   const useruid = auth.currentUser?.uid;
   const [isLoading, setIsLoadind] = useState<boolean>(false);
@@ -38,11 +41,12 @@ const NewTaskForm: React.FC<NewTaskFormProps> = ({ isDialogOpen }) => {
     defaultValues: {
       id: `TASK-${uuidv4()}`,
       title: "",
-      label: labels[0].value,
       priority: priorities[0].value,
       status: statuses[0].value,
       useruid: useruid,
       isFavorite: false,
+      creationDate: new Date(),
+      deadline: new Date(), // Default deadline is today
     },
   });
 
@@ -55,22 +59,10 @@ const NewTaskForm: React.FC<NewTaskFormProps> = ({ isDialogOpen }) => {
     setIsLoadind(false);
     isDialogOpen(false);
   }
+
   return (
     <Form {...newTaskForm}>
       <form onSubmit={newTaskForm.handleSubmit(onSubmit)} className="space-y-2">
-        {/* <FormField
-          name="id"
-          control={newTaskForm.control}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Task id</FormLabel>
-              <FormControl>
-                <Input placeholder="form id" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        /> */}
         <div className="flex gap-2 items-end">
           <FormField
             name="title"
@@ -79,7 +71,7 @@ const NewTaskForm: React.FC<NewTaskFormProps> = ({ isDialogOpen }) => {
               <FormItem className="flex-1">
                 <FormLabel>Task title</FormLabel>
                 <FormControl>
-                  <Input placeholder="e.g., Buy Milk." {...field} />
+                  <Input placeholder="e.g., Clean bathroom." {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -97,64 +89,19 @@ const NewTaskForm: React.FC<NewTaskFormProps> = ({ isDialogOpen }) => {
                       checked={field.value}
                       onChange={field.onChange}
                     />
-                    {/* <Label
-                      className="hover:cursor-pointer hover:text-primary"
-                      htmlFor="isFavorite"
-                    >
-                      It's my favorite task.
-                    </Label> */}
                   </div>
                 </FormControl>
               </FormItem>
             )}
           />
         </div>
-        <FormField
-          name="status"
-          control={newTaskForm.control}
-          render={({ field }) => (
-            <FormItem className="border rounded-sm p-2">
-              <FormLabel>Status</FormLabel>
-              <Separator />
-              <FormControl>
-                <RadioGroup
-                  defaultChecked={true}
-                  defaultValue={field.value}
-                  onValueChange={field.onChange}
-                  className="flex gap-2 justify-between"
-                >
-                  {statuses.map((status) => (
-                    <FormItem
-                      key={status.value}
-                      className="flex items-end space-x-2"
-                    >
-                      <FormControl>
-                        <RadioGroupItem
-                          value={status.value}
-                          id={status.label}
-                        />
-                      </FormControl>
-                      <FormLabel
-                        className="hover:cursor-pointer max-w-full"
-                        htmlFor={status.label}
-                      >
-                        {status.label}
-                      </FormLabel>
-                    </FormItem>
-                  ))}
-                </RadioGroup>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <div className="flex gap-2  w-full">
+        <div className="flex gap-2 w-full">
           <FormField
-            name="label"
+            name="status"
             control={newTaskForm.control}
             render={({ field }) => (
               <FormItem className="border flex-1 rounded-sm p-2">
-                <FormLabel>Label</FormLabel>
+                <FormLabel>Status</FormLabel>
                 <Separator />
                 <FormControl>
                   <RadioGroup
@@ -162,18 +109,20 @@ const NewTaskForm: React.FC<NewTaskFormProps> = ({ isDialogOpen }) => {
                     defaultValue={field.value}
                     onValueChange={field.onChange}
                   >
-                    {labels.map((label) => (
+                    {statuses.map((status) => (
                       <FormItem
-                        key={label.value}
+                        key={status.value}
                         className="flex items-end space-x-2"
                       >
-                        <RadioGroupItem value={label.value} id={label.label} />
-
+                        <RadioGroupItem
+                          value={status.value}
+                          id={status.label}
+                        />
                         <FormLabel
                           className="hover:cursor-pointer w-full"
-                          htmlFor={label.label}
+                          htmlFor={status.label}
                         >
-                          {label.label}
+                          {status.label}
                         </FormLabel>
                       </FormItem>
                     ))}
@@ -205,7 +154,6 @@ const NewTaskForm: React.FC<NewTaskFormProps> = ({ isDialogOpen }) => {
                           value={priority.value}
                           id={priority.label}
                         />
-
                         <FormLabel
                           className="hover:cursor-pointer w-full"
                           htmlFor={priority.label}
@@ -221,8 +169,29 @@ const NewTaskForm: React.FC<NewTaskFormProps> = ({ isDialogOpen }) => {
             )}
           />
         </div>
+        <div>
+          <FormField
+            name="deadline"
+            control={newTaskForm.control}
+            render={({ field }) => (
+              <FormItem className="border flex-1 rounded-sm p-2">
+                <FormLabel>Deadline</FormLabel>
+                <FormControl>
+                <DatePicker
+                    selected={field.value}
+                    onChange={(date) => field.onChange(date as Date)} 
+                    dateFormat="yyyy-MM-dd" // Formatul afisat
+                    placeholderText="Select deadline"
+                    className="w-full border rounded p-2 text-black" 
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
-        <div className=" flex gap-2 justify-end">
+        <div className="flex gap-2 justify-end">
           <Button
             onClick={() => isDialogOpen(false)}
             type="button"

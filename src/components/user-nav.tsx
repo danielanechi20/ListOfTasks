@@ -3,16 +3,14 @@ import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { auth } from "@/firebase/config";
-import { Link } from "react-router-dom";
 import avatarFallbackGenarator from "./avatar-fallback-generator";
-import { LogOut, Settings, UserCircle2 } from "lucide-react";
+import { LogOut } from "lucide-react";
 import { ModeToggle } from "./mode-toggle";
 
 export function UserNav() {
@@ -44,32 +42,10 @@ export function UserNav() {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuGroup>
-          <Link to={"/app/settings"}>
-            <DropdownMenuItem>
-              <UserCircle2 className="mr-2" size={20} />
-              Profile
-              {/* <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut> */}
-            </DropdownMenuItem>
-          </Link>
-          {/* <DropdownMenuItem>
-            Billing
-            <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
-          </DropdownMenuItem> */}
-          <Link to={"/app/settings"}>
-            <DropdownMenuItem>
-              <Settings className="mr-2" size={20} />
-              Settings
-              {/* <DropdownMenuShortcut>⌘S</DropdownMenuShortcut> */}
-            </DropdownMenuItem>
-          </Link>
-          {/* <DropdownMenuItem>New Team</DropdownMenuItem> */}
-        </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => auth.signOut()}>
           <LogOut className="mr-2" size={20} />
           Log out
-          {/* <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut> */}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

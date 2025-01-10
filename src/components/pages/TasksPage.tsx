@@ -39,12 +39,21 @@ export default function TasksPage() {
         const querySnapshot = await getDocs(taskQuery);
 
         querySnapshot.forEach((doc) => {
-          pushTask(doc.data() as Task);
+          const data = doc.data();
+
+          const task = {
+            ...data,
+            creationDate: data.creationDate?.toDate?.() || data.creationDate,
+            deadline: data.deadline?.toDate?.() || data.deadline,
+          };
+
+          pushTask(task as Task);
         });
 
         setIsLoading(false);
       } catch (error) {
         toast.error("Something went wrong.");
+        setIsLoading(false);
       }
     };
     fetchData();

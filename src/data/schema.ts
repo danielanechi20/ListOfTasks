@@ -1,18 +1,11 @@
 import { z } from "zod";
-import { labels, priorities, statuses } from "./data";
+import { priorities, statuses } from "./data";
 
 const defaultStatus = statuses[0].value;
 const statusExceptFirst: string[] = [];
 for (let i = 1; i < statuses.length; i++) {
   statusExceptFirst.push(statuses[i].value);
 }
-
-const defaultLabel = labels[0].value;
-const labelsExceptFirst: string[] = [];
-for (let i = 1; i < labels.length; i++) {
-  labelsExceptFirst.push(labels[i].value);
-}
-
 const defaultPriority = priorities[0].value;
 const priritiesExceptFirst: string[] = [];
 for (let i = 1; i < priorities.length; i++) {
@@ -27,9 +20,6 @@ export const taskSchema = z.object({
   status: z.enum([defaultStatus, ...statusExceptFirst], {
     required_error: "You need to select one.",
   }),
-  label: z.enum([defaultLabel, ...labelsExceptFirst], {
-    required_error: "You need to select one.",
-  }),
   priority: z.enum([defaultPriority, ...priritiesExceptFirst], {
     required_error: "You need to select one.",
   }),
@@ -41,6 +31,14 @@ export const taskSchema = z.object({
     })
     .default(false)
     .optional(),
+    creationDate: z.preprocess(
+      (value) => (typeof value === "string" || value instanceof Date ? new Date(value) : value),
+      z.date()
+    ),
+    deadline: z.preprocess(
+      (value) => (typeof value === "string" || value instanceof Date ? new Date(value) : value),
+      z.date()
+    ),
 });
 
 export type Task = z.infer<typeof taskSchema>;

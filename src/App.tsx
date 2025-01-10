@@ -6,9 +6,7 @@ import Home from "@/components/pages/Home";
 import Landing from "@/components/pages/Landing";
 
 import { ThemeProvider } from "@/components/theme-provider";
-import SettingsLayout from "@/components/pages/SettingsLayout";
 import RequireAuth from "@/components/RequireAuth";
-import Profile from "@/components/pages/Profile";
 
 function App() {
   return (
@@ -24,20 +22,6 @@ function App() {
             </RequireAuth>
           }
         />
-
-        <Route path="/app">
-          <Route element={<SettingsLayout />}>
-            <Route
-              path="settings"
-              element={
-                <RequireAuth>
-                  <Profile />
-                </RequireAuth>
-              }
-            />
-          </Route>
-        </Route>
-
         <Route
           path="/auth"
           element={

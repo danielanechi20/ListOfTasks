@@ -31,10 +31,10 @@ const formSchema = z
       .min(6, { message: "Password must be at-least of six charecters long." }),
   })
   .refine(
-    (data) => data.password === data.confirmPassword, // Password and confirm must be equal
+    (data) => data.password === data.confirmPassword, 
     {
-      message: "Passwords don't match", // Custom error message
-      path: ["confirmPassword"], // Path of the error field
+      message: "Passwords don't match", 
+      path: ["confirmPassword"], 
     }
   );
 
@@ -69,7 +69,6 @@ export function UserSignUpForm() {
 
   return (
     <>
-      {/* <div className={cn("grid gap-6", className)} {...props}> */}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <FormField
@@ -137,7 +136,6 @@ export function UserSignUpForm() {
         </form>
       </Form>
 
-      {/* </div> */}
     </>
   );
 }
