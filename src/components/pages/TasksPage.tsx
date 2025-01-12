@@ -1,7 +1,7 @@
-import { columns } from "@/components/columns";
-import { DataTable } from "@/components/data-table";
+import { useState, useEffect } from "react";
+import DataTable from "@/components/data-table"; // Correct import for DataTable
 import { UserNav } from "@/components/user-nav";
-import { Task } from "@/data/schema";
+import { Task } from "@/data/schema"; // Correct import for Task type
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { auth, db } from "@/firebase/config";
 import { toast } from "sonner";
@@ -14,20 +14,34 @@ import {
   SheetTitle,
 } from "../ui/sheet";
 import EditTaskForm from "../forms/edit-task-form";
-import { useEffect, useState } from "react";
+import ExportButton from "../ui/exportButton"; // Import Export Button correctly
+import { columns } from "@/components/columns"; // Correctly import columns
 
 export default function TasksPage() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [selectedTasks, setSelectedTasks] = useState<Set<string>>(new Set());
 
   const tasks = useTaskStore((state) => state.tasks);
   const pushTask = useTaskStore((state) => state.pushTask);
   const clear = useTaskStore((state) => state.clear);
 
+  const handleSelectTask = (taskId: string) => {
+    setSelectedTasks((prevSelected) => {
+      const newSelected = new Set(prevSelected);
+      if (newSelected.has(taskId)) {
+        newSelected.delete(taskId);
+      } else {
+        newSelected.add(taskId);
+      }
+      return newSelected;
+    });
+  };
+
   useEffect(() => {
-    //Reference to the task collection
+    // Reference to the task collection
     const tasksRef = collection(db, "tasks");
 
-    //Query agains the collection
+    // Query against the collection
     const taskQuery = query(
       tasksRef,
       where("useruid", "==", auth.currentUser?.uid)
@@ -82,7 +96,16 @@ export default function TasksPage() {
             </div>
           </div>
           {tasks && (
-            <DataTable isLoading={isLoading} data={tasks!} columns={columns} />
+            <>
+              <DataTable
+                columns={columns} // Pass the columns here
+                data={tasks} // Make sure data is passed correctly
+                isLoading={isLoading}
+                selectedTasks={selectedTasks}
+                onSelectTask={handleSelectTask} // Handle task selection
+              />
+              <ExportButton tasks={tasks.filter((task) => selectedTasks.has(task.id))} /> {/* Export selected tasks */}
+            </>
           )}
         </div>
         <SheetContent>

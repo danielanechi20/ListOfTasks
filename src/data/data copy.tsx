@@ -10,7 +10,7 @@ import {
 
 export const statuses = [
   {
-    value: "todo",
+    value: "to do",
     label: "To do",
     icon: CircleIcon,
     bgColor: "bg-gray-500", 

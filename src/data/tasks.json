@@ -16,7 +16,7 @@
   {
     "id": "TASK-7839",
     "title": "We need to bypass the neural TCP card!",
-    "status": "todo",
+    "status": "to do",
     "label": "bug",
     "priority": "high"
   },
