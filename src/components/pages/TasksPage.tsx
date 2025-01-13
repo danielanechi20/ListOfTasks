@@ -33,19 +33,20 @@ export default function TasksPage() {
       } else {
         newSelected.add(taskId);
       }
+      console.log("Currently selected tasks:", Array.from(newSelected));
       return newSelected;
     });
   };
+  
+  
 
   useEffect(() => {
-    // Reference to the task collection
     const tasksRef = collection(db, "tasks");
-
-    // Query against the collection
     const taskQuery = query(
       tasksRef,
       where("useruid", "==", auth.currentUser?.uid)
     );
+
     const fetchData = async () => {
       try {
         setIsLoading(true);
@@ -73,20 +74,21 @@ export default function TasksPage() {
     fetchData();
   }, []);
 
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const selectedTasksData = tasks.filter((task) => selectedTasks.has(task.id));
+  console.log("Tasks to export:", selectedTasksData);
+  
+
+    const [isOpen, setIsOpen] = useState<boolean>(false);
   function handleSheetOpen(open: boolean): void {
     setIsOpen(open);
   }
-
   return (
     <>
       <Sheet open={isOpen} onOpenChange={handleSheetOpen}>
-        <div className="flex h-full flex-1 flex-col space-y-8 p-8 ">
+        <div className="flex h-full flex-1 flex-col space-y-8 p-8">
           <div className="flex items-center justify-between space-y-2">
             <div>
-              <h2 className="text-2xl font-bold tracking-tight">
-                Welcome back!
-              </h2>
+              <h2 className="text-2xl font-bold tracking-tight">Welcome back!</h2>
               <p className="text-muted-foreground">
                 Here&apos;s a list of your tasks for this month!
               </p>
@@ -98,22 +100,22 @@ export default function TasksPage() {
           {tasks && (
             <>
               <DataTable
-                columns={columns} // Pass the columns here
-                data={tasks} // Make sure data is passed correctly
+                columns={columns}
+                data={tasks}
                 isLoading={isLoading}
                 selectedTasks={selectedTasks}
-                onSelectTask={handleSelectTask} // Handle task selection
+                onSelectTask={handleSelectTask}
               />
-              <ExportButton tasks={tasks.filter((task) => selectedTasks.has(task.id))} /> {/* Export selected tasks */}
+              {console.log("Selected tasks for export:", selectedTasksData)}
+              <ExportButton tasks={selectedTasksData} />
             </>
           )}
         </div>
         <SheetContent>
           <SheetHeader>
-            <SheetTitle>Edit Task.</SheetTitle>
+            <SheetTitle>Edit Task</SheetTitle>
             <SheetDescription>
-              This action cannot be undone. This will permanently update your
-              task.
+              This action cannot be undone. This will permanently update your task.
             </SheetDescription>
           </SheetHeader>
           <EditTaskForm isDialogOpen={handleSheetOpen} />

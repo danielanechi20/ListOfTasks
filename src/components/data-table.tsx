@@ -1,19 +1,13 @@
-import * as React from "react";
+
 import {
   ColumnDef,
-  ColumnFiltersState,
-  SortingState,
-  VisibilityState,
   flexRender,
   getCoreRowModel,
-  getFacetedRowModel,
-  getFacetedUniqueValues,
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-
 import {
   Table,
   TableBody,
@@ -27,109 +21,72 @@ import { DataTablePagination } from "../components/data-table-pagination";
 import { DataTableToolbar } from "../components/data-table-toolbar";
 import { Loader2 } from "lucide-react";
 
-// Define props for the component, including selected tasks for exporting
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   isLoading: boolean;
-  selectedTasks: Set<string>; // Track selected tasks
-  onSelectTask: (taskId: string) => void; // Function to toggle task selection
+  selectedTasks: Set<string>;
+  onSelectTask: (taskId: string) => void;
 }
 
-const DataTable = <TData, TValue>({
+const DataTable = <TData extends { id: string }, TValue>({
   columns,
   data,
   isLoading,
-  selectedTasks,
   onSelectTask,
 }: DataTableProps<TData, TValue>) => {
-  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
-  const [sorting, setSorting] = React.useState<SortingState>([]);
-
   const table = useReactTable({
     data,
     columns,
-    state: {
-      sorting,
-      columnVisibility,
-      columnFilters,
-    },
-    onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
-    onColumnVisibilityChange: setColumnVisibility,
+    state: {},
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    getFacetedRowModel: getFacetedRowModel(),
-    getFacetedUniqueValues: getFacetedUniqueValues(),
   });
 
-  // Render the table
   return (
     <div className="space-y-4">
       <DataTableToolbar table={table} />
-
       <div className="rounded-md border">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id} colSpan={header.colSpan}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  );
-                })}
+                {headerGroup.headers.map((header) => (
+                  <TableHead key={header.id} colSpan={header.colSpan}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                  </TableHead>
+                ))}
               </TableRow>
             ))}
           </TableHeader>
-
           <TableBody>
-            {table.getRowModel().rows?.length ? (
+            {table.getRowModel().rows.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
+                  onClick={() => onSelectTask(row.original.id)} // Trigger onSelectTask
                 >
-                  {/* Checkbox for selecting tasks */}
-                  <TableCell>
-                    <input
-                      type="checkbox"
-                      checked={selectedTasks.has(row.id)}
-                      onChange={() => onSelectTask(row.id)} // Toggle task selection
-                    />
-                  </TableCell>
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
                   ))}
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
+                <TableCell colSpan={columns.length} className="text-center">
                   {isLoading ? (
-                    <div className="flex items-center justify-center gap-2">
-                      <Loader2 className="animate-spin" />
-                      <p>Fetching Data...</p>
-                    </div>
+                    <Loader2 className="animate-spin" />
                   ) : (
-                    "No results."
+                    "No results found"
                   )}
                 </TableCell>
               </TableRow>
@@ -137,10 +94,9 @@ const DataTable = <TData, TValue>({
           </TableBody>
         </Table>
       </div>
-
       <DataTablePagination table={table} />
     </div>
   );
 };
 
-export default DataTable; // Export it as default
+export default DataTable;

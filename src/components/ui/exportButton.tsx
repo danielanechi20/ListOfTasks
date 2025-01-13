@@ -1,5 +1,5 @@
-import React from 'react';
-import { CSVLink } from 'react-csv';  // CSV export library
+import React from "react";
+import { CSVLink } from "react-csv";
 
 interface ExportButtonProps {
   tasks: Array<{
@@ -7,7 +7,6 @@ interface ExportButtonProps {
     title: string;
     status: string;
     priority: string;
-    useruid: string;
     creationDate: Date;
     deadline: Date;
     isFavorite?: boolean;
@@ -15,15 +14,16 @@ interface ExportButtonProps {
 }
 
 const ExportButton: React.FC<ExportButtonProps> = ({ tasks }) => {
-  // Prepare data for CSV export
-  const csvData = tasks.map(task => ({
+  console.log("Exporting tasks:", tasks); // Debug selected tasks
+
+  const csvData = tasks.map((task) => ({
     id: task.id,
     title: task.title,
     status: task.status,
     priority: task.priority,
-    creationDate: task.creationDate.toISOString(),  // Convert date to string for CSV
+    creationDate: task.creationDate.toISOString(),
     deadline: task.deadline.toISOString(),
-    isFavorite: task.isFavorite ? "Yes" : "No"  // Convert boolean to string for better readability
+    isFavorite: task.isFavorite ? "Yes" : "No",
   }));
 
   const csvHeaders = [
@@ -37,16 +37,14 @@ const ExportButton: React.FC<ExportButtonProps> = ({ tasks }) => {
   ];
 
   return (
-    <div className="absolute bottom-4 right-4">
-      <CSVLink
-        data={csvData}
-        headers={csvHeaders}
-        filename="tasks.csv"
-        className="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-md"
-      >
-        Export Selected Tasks
-      </CSVLink>
-    </div>
+    <CSVLink
+      data={csvData}
+      headers={csvHeaders}
+      filename="tasks.csv"
+      className="px-4 py-2 bg-blue-500 text-white rounded-lg"
+    >
+      Export Tasks
+    </CSVLink>
   );
 };
 

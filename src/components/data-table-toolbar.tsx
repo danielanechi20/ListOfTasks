@@ -1,8 +1,8 @@
 import { Cross2Icon } from "@radix-ui/react-icons";
 import { Table } from "@tanstack/react-table";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
 import { DataTableViewOptions } from "./data-table-view-options";
 
 import { priorities, statuses } from "../data/data";
@@ -15,7 +15,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
+} from "../components/ui/dialog";
 import NewTaskForm from "./forms/new-task-form";
 import { useState } from "react";
 
@@ -86,12 +86,6 @@ export function DataTableToolbar<TData>({
         </DialogContent>
       </Dialog>
 
-      {/* <Link to={"tasks/new"}>
-        <Button type="button" className="ml-2 font-bold" size={"sm"}>
-          <PlusIcon className="h-4 w-4 font-bold mr-1" />
-          New Task
-        </Button>
-      </Link> */}
     </div>
   );
 }

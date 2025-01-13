@@ -2,19 +2,19 @@ import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { Row } from "@tanstack/react-table";
 import { doc, deleteDoc, setDoc } from "firebase/firestore";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "../components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { SheetTrigger } from "@/components/ui/sheet";
+} from "../components/ui/dropdown-menu";
+import { SheetTrigger } from "../components/ui/sheet";
 
 import { Task, taskSchema } from "../data/schema";
-import { useTaskStore } from "@/stores/task-store";
-import { db } from "@/firebase/config";
+import { useTaskStore } from "../stores/task-store";
+import { db } from "../firebase/config";
 import { Copy, Loader2, Pencil, Trash2 } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
 import { toast } from "sonner";
