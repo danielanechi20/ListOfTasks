@@ -6,6 +6,9 @@ import {
   CircleIcon,
   CrossCircledIcon,
   StopwatchIcon,
+  MinusIcon,
+  LoopIcon,
+  CalendarIcon,
 } from "@radix-ui/react-icons";
 
 export const statuses = [
@@ -55,5 +58,23 @@ export const priorities = [
     label: "High",
     value: "high",
     icon: ArrowUpIcon,
+  },
+];
+
+export const recurences = [
+  {
+    label: "None",
+    value: "none",
+    icon: MinusIcon, // Represents no priority
+  },
+  {
+    label: "Daily",
+    value: "daily",
+    icon: LoopIcon, // Represents a repeating task
+  },
+  {
+    label: "Weekly",
+    value: "weekly",
+    icon: CalendarIcon, // Represents weekly scheduling
   },
 ];

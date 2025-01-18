@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/form";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Input } from "@/components/ui/input";
-import { priorities, statuses } from "@/data/data";
+import { priorities, statuses, recurences } from "@/data/data";
 import { Separator } from "../ui/separator";
 import React, { useState, useEffect } from "react";
 import { useTaskStore } from "@/stores/task-store";
@@ -23,7 +23,6 @@ import { doc, setDoc } from "firebase/firestore";
 import { auth, db } from "@/firebase/config";
 import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
-import FavoriteSwitch from "../ui/favorite-switch";
 import { saveTaskToIndexedDB, getAllTasksFromIndexedDB, clearIndexedDB } from "@/stores/indexedDB";
 
 const NewTaskForm = ({ isDialogOpen }) => {
@@ -42,10 +41,11 @@ const NewTaskForm = ({ isDialogOpen }) => {
       isFavorite: false,
       creationDate: new Date(),
       deadline: new Date(),
+      recurence: recurences[0].value,
     },
   });
 
-  // ✅ Sync Offline Tasks to Firestore When Online
+  //  Sync Offline Tasks to Firestore When Online
   useEffect(() => {
     const syncTasks = async () => {
       if (navigator.onLine) {
@@ -106,23 +106,6 @@ const NewTaskForm = ({ isDialogOpen }) => {
                   <Input placeholder="e.g., Clean bathroom." {...field} />
                 </FormControl>
                 <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            name="isFavorite"
-            control={newTaskForm.control}
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <div className="flex mb-3 items-center space-x-2">
-                    <FavoriteSwitch
-                      id="isFavorite"
-                      checked={field.value}
-                      onChange={field.onChange}
-                    />
-                  </div>
-                </FormControl>
               </FormItem>
             )}
           />
@@ -204,6 +187,37 @@ const NewTaskForm = ({ isDialogOpen }) => {
                     placeholderText="Select deadline"
                     className="w-full border rounded p-2 text-black"
                   />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        <div>
+          <FormField
+            name="recurence"
+            control={newTaskForm.control}
+            render={({ field }) => (
+              <FormItem className="border flex-1 rounded-sm p-2">
+                <FormLabel>Recurrence</FormLabel>
+                <Separator />
+                <FormControl>
+                  <RadioGroup
+                    className="flex space-x-4"
+                    defaultChecked
+                    defaultValue={field.value}
+                    onValueChange={field.onChange}
+                  >
+                    {recurences.map((recurence) => (
+                      <FormItem key={recurence.value} className="flex items-center space-x-2">
+                        <RadioGroupItem value={recurence.value} id={recurence.label} />
+                        <FormLabel className="hover:cursor-pointer" htmlFor={recurence.label}>
+                          {recurence.label}
+                        </FormLabel>
+                      </FormItem>
+                    ))}
+                  </RadioGroup>
                 </FormControl>
                 <FormMessage />
               </FormItem>

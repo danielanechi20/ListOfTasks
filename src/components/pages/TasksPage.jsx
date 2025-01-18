@@ -26,6 +26,8 @@ export default function TasksPage() {
   const pushTask = useTaskStore((state) => state.pushTask);
   const clear = useTaskStore((state) => state.clear);
 
+  const { generateRecurringTasks } = useTaskStore();
+
   const handleSelectTask = (taskId) => {
     setSelectedTasks((prevSelected) => {
       const newSelected = new Set(prevSelected);
@@ -101,6 +103,18 @@ export default function TasksPage() {
     setIsOpen(open);
   }
 
+  useEffect(() => {
+    // ✅ Run the function when the page loads
+    generateRecurringTasks();
+
+    // ✅ Run it every 24 hours (86400000)
+    const interval = setInterval(() => {
+      generateRecurringTasks();
+    }, 86400000);
+
+    return () => clearInterval(interval);
+  }, [generateRecurringTasks]);
+
   return (
     <>
       <Sheet open={isOpen} onOpenChange={handleSheetOpen}>
@@ -116,7 +130,7 @@ export default function TasksPage() {
               <UserNav />
             </div>
           </div>
-          {tasks.length > 0 ? (
+          {tasks && (
             <>
               <DataTable
                 columns={columns}
@@ -127,9 +141,7 @@ export default function TasksPage() {
               />
               {selectedTasksData.length > 0 && <ExportButton tasks={selectedTasksData} />}
             </>
-          ) : (
-            <p className="text-center text-muted-foreground">No tasks found.</p>
-          )}
+          ) }
         </div>
         <SheetContent>
           <SheetHeader>

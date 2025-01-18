@@ -16,7 +16,7 @@ import {
 
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Input } from "@/components/ui/input";
-import { priorities, statuses } from "@/data/data";
+import { priorities, statuses, recurences } from "@/data/data";
 import { Separator } from "@/components/ui/separator";
 import React, { useState } from "react";
 import { useTaskStore } from "@/stores/task-store";
@@ -24,7 +24,6 @@ import { Loader2 } from "lucide-react";
 import { doc, updateDoc } from "firebase/firestore";
 import { auth, db } from "@/firebase/config";
 import { toast } from "sonner";
-import FavoriteSwitch from "@/components/ui/favorite-switch";
 
 const EditTaskForm = ({ isDialogOpen }) => {
   const selectedTaskToEdit = useTaskStore((state) => state.selectedTaskToEdit);
@@ -41,7 +40,8 @@ const EditTaskForm = ({ isDialogOpen }) => {
       useruid: auth.currentUser?.uid,
       isFavorite: selectedTaskToEdit?.isFavorite,
       creationDate: new Date(),
-      deadline: new Date(), // Default deadline is today
+      deadline: new Date(), 
+      recurence: recurences[0].value,
     },
   });
 
@@ -69,23 +69,6 @@ const EditTaskForm = ({ isDialogOpen }) => {
                   <Input placeholder="e.g., Buy Milk." {...field} />
                 </FormControl>
                 <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            name="isFavorite"
-            control={form.control}
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <div className="flex mb-3 items-center space-x-2">
-                    <FavoriteSwitch
-                      id="isFavorite"
-                      checked={field.value}
-                      onChange={field.onChange}
-                    />
-                  </div>
-                </FormControl>
               </FormItem>
             )}
           />
@@ -173,6 +156,37 @@ const EditTaskForm = ({ isDialogOpen }) => {
             )}
           />
         </div>
+
+        <div>
+                  <FormField
+                    name="recurence"
+                    control={form.control}
+                    render={({ field }) => (
+                      <FormItem className="border flex-1 rounded-sm p-2">
+                        <FormLabel>Recurrence</FormLabel>
+                        <Separator />
+                        <FormControl>
+                          <RadioGroup
+                            className="flex space-x-4"
+                            defaultChecked
+                            defaultValue={field.value}
+                            onValueChange={field.onChange}
+                          >
+                            {recurences.map((recurence) => (
+                              <FormItem key={recurence.value} className="flex items-center space-x-2">
+                                <RadioGroupItem value={recurence.value} id={recurence.label} />
+                                <FormLabel className="hover:cursor-pointer" htmlFor={recurence.label}>
+                                  {recurence.label}
+                                </FormLabel>
+                              </FormItem>
+                            ))}
+                          </RadioGroup>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
 
         {/* Buttons */}
         <div className="flex gap-2 justify-end">

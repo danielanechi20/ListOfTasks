@@ -1,11 +1,14 @@
 import { z } from "zod";
-import { priorities, statuses } from "./data";
+import { priorities, statuses, recurences } from "./data";
 
 const defaultStatus = statuses[0].value;
 const statusExceptFirst = statuses.slice(1).map(status => status.value);
 
 const defaultPriority = priorities[0].value;
 const prioritiesExceptFirst = priorities.slice(1).map(priority => priority.value);
+
+const defaultRecurence = recurences[0].value;
+const recurenceExceptFirst = recurences.slice(1).map(recurence => recurence.value);
 
 export const taskSchema = z.object({
   id: z.string(),
@@ -34,5 +37,8 @@ export const taskSchema = z.object({
     (value) => (typeof value === "string" || value instanceof Date ? new Date(value) : value),
     z.date()
   ),
+  recurence: z.enum([defaultRecurence, ...recurenceExceptFirst], {
+    required_error: "You need to select one.",
+  }),
 });
 
