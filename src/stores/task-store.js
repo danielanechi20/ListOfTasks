@@ -1,8 +1,8 @@
 import { create } from "zustand";
 import { v4 as uuidv4 } from "uuid";
 import { setDoc, doc } from "firebase/firestore";
-import { saveTaskToIndexedDB } from "@/stores/indexedDB";
-import { db } from "@/firebase/config";
+import { saveTaskToIndexedDB } from "../stores/indexedDB";
+import { db } from "../firebase/config";
 
 const shouldRepeatTask = (task) => {
   const today = new Date();
