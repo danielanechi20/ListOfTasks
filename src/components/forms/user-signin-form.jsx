@@ -78,7 +78,7 @@ export function UserSignInForm() {
         />
 
         <Button type="submit" className="w-full" disabled={loading}>
-          {loading ? "Signing in..." : "Sign In"}
+          {loading ? "Signing in..." : "Sign Up"}
         </Button>
       </form>
     </Form>
